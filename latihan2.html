@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue Beginner 2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body{
+            margin: 5%;
+            font-family: 'Quicksand', sans-serif;
+        }
+        .active{
+            background: lightskyblue;
+            border: 0;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <header-component nama="Rafli Surya P"></header-component>
+        <nav>
+            <router-link to="/about">about</router-link>
+            <router-link to="/kelas">kelas</router-link>
+        </nav>
+
+        <main>
+            <!-- <main-component :items="kelas" v-on:submitkelas="submitkelas" v-on:hapuskelas="hapuskelas"></main-component> -->
+            <!-- <home-comp></home-comp> -->
+            <router-view :items="kelas" v-on:submitkelas="submitkelas" v-on:hapuskelas="hapuskelas"></router-view>
+        </main>
+
+        <footer-component>
+            <p>Copyright &copy; 2020 RSurya99</p>
+        </footer-component>
+        
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+    <script>
+        const Home = {
+            template: `<h1>Home</h1>`
+        }
+        const About = {
+            template: `<h1>About</h1>`
+        }
+        const Kelas = {
+            props: ['items', 'input'],
+            methods: {},
+            template:   `
+            <div>
+                <h3>Form Submit</h3>
+                <p><input type="text" placeholder="Masukkan Nama Kelas" v-on:keyup.enter="$emit('submitkelas', $event)"></p>
+
+                <h3>Daftar Kelas ({{ items.length }})</h3>
+                <template v-if="items.length">
+                    <ul>
+                        <li v-for="(k, i) in items">
+                            {{ i+1 }} - {{ k.judul }}
+                            <a href="" v-on:click.prevent="$emit('hapuskelas', i)">hapus</a>
+                        </li>
+                        
+                    </ul>
+                </template>
+                <li v-else>Kelas belum tersedia</li>
+
+                <div>
+                    <label for=""><input type="checkbox" value="React" v-model="items">React</label>
+                    <label for=""><input type="checkbox" value="Vue" v-model="items">Vue</label>
+                    <label for=""><input type="checkbox" value="Angular" v-model="items">Angular</label>
+                </div>
+            </div>`
+        }
+
+        Vue.component('header-component', {
+            props: ['nama'],
+            data: function(){
+                return {
+                    gambar: 'img/vue.png'
+                }
+            },
+            template: `<header>
+                            <img :src="gambar" width="100px" alt="">
+                            <p>The Progressive Javascript Framework</p>
+                            <h3>Hello, {{ nama }}</h3>
+                        </header>`
+        })
+
+        Vue.component('footer-component', {
+            template: `<footer>
+                            <slot></slot>
+                        </footer>`
+        })
+
+        const routes = [
+            { path: '/', component: Home },
+            { path: '/about', component: About },
+            { path: '/kelas', component: Kelas }
+        ]
+
+        const router = new VueRouter({
+            mode: 'history',
+            routes // short for `routes: routes`
+        })
+
+        const vm = new Vue({
+            el: '#app',
+            router,
+            components: {
+                'home-comp': Home
+            },
+            data: {
+                kelas: [
+                {id: 1, judul: 'Vuejs', deskripsi: 'The Progressive Javascript Framework', gambar: 'img/vue.png'},
+                {id: 2, judul: 'Reactjs', deskripsi: 'The Fastest Javascript Library for UI', gambar: 'img/react.png'}
+                ]
+            },
+            methods:{
+                hapuskelas: function(index){
+                    this.kelas.splice(index, 1);                 
+                },
+                submitkelas: function(e){
+                    this.kelas.unshift(e.target.value)
+                    e.target.value = ""
+                }
+            },
+            computed: {
+            }
+        })
+    </script>
+</body>
+</html>

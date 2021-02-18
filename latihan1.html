@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue Beginner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body{
+            margin: 5%;
+            font-family: 'Quicksand', sans-serif;
+        }
+        .active{
+            background: lightskyblue;
+            border: 0;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <img :src="gambar" width="100px" alt="">
+            <!-- pakai v-once jika ingin data tidak dapat diubah -->
+            <h1 v-text="name"></h1>
+            
+            <h3>Form Submit</h3>
+            <p><input type="text" placeholder="Masukkan Nama Kelas" v-on:keyup.enter="submit" v-model="kelasbaru"></p>
+
+            <h3>Daftar Kelas ({{ kelas.length }})</h3>
+            <template v-if="kelas.length">
+                <ul>
+                    <li v-for="(k, i) in kelas" v-text="`${i+1} - ${k}`"></li>
+                </ul>
+            </template>
+            <li v-else>Kelas belum tersedia</li>
+
+            <h3>Perulangan 1- 5</h3>
+            <ul>
+                <li v-for="k in 5" v-text="k"></li>
+            </ul>
+
+            <h3>Mencari bilangan genap: {{ numbers }}</h3>
+            <ul>
+                <li v-for="k in findEvenNumber(numbers)" v-text="k"></li>
+            </ul>
+
+            <p>{{ kelas }}</p>
+            <div>
+                <label for=""><input type="checkbox" value="React" v-model="kelas">React</label>
+                <label for=""><input type="checkbox" value="Vue" v-model="kelas">Vue</label>
+                <label for=""><input type="checkbox" value="Angular" v-model="kelas">Angular</label>
+            </div>
+
+            <p>
+                <button v-on:click="btnClick">ditekan</button>
+            </p>
+            <p>Bilangan {{ bilangan }} adalah bilangan {{ cekBilangan }}</p>
+            <p>The Progressive Javascript Framework</p>
+
+            <a v-bind:class="{active: menu === 'home'}" href="#" v-on:click.prevent="menuFunc('home')">Home</a>
+            <a v-bind:class="{active: menu === 'about'}" href="#" v-on:click.prevent="menuFunc('about')">About</a>
+            <a v-bind:class="{active: menu === 'blog'}" href="#" v-on:click.prevent="menuFunc('blog')">Blog</a>
+        </header>
+
+        <footer>
+            <p>Copyright &copy; 2020 RSurya99</p>
+        </footer>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script>
+        const allData = {
+            // string, number, boolean, array, object
+            name: 'Vue.js',
+            message: 'Hello World',
+            qty: 1,
+            namaDepan: 'Rafli ',
+            namaBelakang: 'Surya P',
+            bilangan: 5,
+            gambar: 'img/logo.png',
+            menu: 'home',
+            kelas: [],
+            numbers: [1,2,3,4,5],
+            kelasbaru: ""
+        }
+
+        const vm = new Vue({
+            el: '#app',
+            data: allData,
+            methods: {
+                getName: function(){
+                    return 'Hello, ' + this.name;
+                },
+                ubahNama: function(namaBaru){
+                    this.name = namaBaru;
+                },
+                btnClick: function(){
+                    this.bilangan++
+                },
+                findEvenNumber: (number) => {
+                    return number.filter(k => k % 2 == 0)
+                },
+                menuFunc: function(data, e){
+                    this.menu = data
+                },
+                submit: function(e){
+                    this.kelas.push(this.kelasbaru) // pakai unshift jika ingin menambahkan elemen di awal array
+                    this.kelasbaru = ''
+                }
+            },
+            computed: {
+                totalBayar: function(){
+                    return this.qty * 10000;
+                },
+                namaLengkap: function(){
+                    return `${this.namaDepan} ${this.namaBelakang}`;
+                },
+                cekBilangan: function(){
+                    return this.bilangan % 2 == 0 ? 'Genap' : 'Ganjil';
+                }
+            }
+        })
+    </script>
+</body>
+</html>

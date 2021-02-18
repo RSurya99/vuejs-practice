@@ -1,0 +1,17 @@
+body{
+    margin: 5%;
+    font-family: 'Quicksand', sans-serif;
+}
+.active{
+    background: lightskyblue;
+    border: 0;
+    padding: 5px;
+}
+.error{
+    color: red;
+    text-transform: lowercase;
+    font-style: italic;
+}
+.input-group{
+    margin-bottom: 5px;
+}

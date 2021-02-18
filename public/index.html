@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue Beginner 2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <header-component nama="Rafli Surya P"></header-component>
+        <nav>
+            <router-link to="/about">about</router-link>
+            <router-link to="/kelas">kelas</router-link>
+        </nav>
+
+        <main>
+            <!-- <main-component :items="kelas" v-on:submitkelas="submitkelas" v-on:hapuskelas="hapuskelas"></main-component> -->
+            <!-- <home-comp></home-comp> -->
+            <router-view :items="kelas" v-on:submitkelas="submitkelas" v-on:hapuskelas="hapuskelas"></router-view>
+        </main>
+
+        <footer-component>
+            <p>Copyright &copy; 2020 RSurya99</p>
+        </footer-component>
+        
+    </div>
+
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script> -->
+    <script src="vue.js"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+    <script src="https://unpkg.com/uuid@latest/dist/umd/uuidv4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-database.js"></script>
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+        https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="firebase.js"></script>
+    <script src="component.js"></script>
+    <script src="router.js"></script>
+    <script>
+        const vm = new Vue({
+            el: '#app',
+            router,
+            components: {
+                'home-comp': Home
+            },
+            data: {
+                /* kelas: [
+                {id: 1, judul: 'Vuejs', deskripsi: 'The Progressive Javascript Framework', gambar: 'vue.png'},
+                {id: 2, judul: 'Reactjs', deskripsi: 'The Fastest Javascript Library for UI', gambar: 'react.png'}
+                ], */
+                kelas: []
+            },
+            created(){
+                kelasRef.on('value', this.resultData, this.errorData)
+
+                // mengambil data via local storage
+                // this.kelas = JSON.parse(localStorage.getItem('kelas')) || []
+                console.log('created')
+            },
+            beforeCreate(){
+                console.log('before create')
+            },
+            mounted(){
+                console.log('mounted')
+            },
+            beforeUpdate(){
+                console.log('before update')
+            },
+            updated(){
+                console.log('updated')
+            },
+            methods:{
+                hapuskelas: function(id){
+
+                    database.ref('/kelas/' +id).remove()  
+                    
+                    Swal.fire({
+                        text: 'Data Berhasil Dihapus',
+                        icon: 'warning'
+                    })
+                },
+                submitkelas: function(data){
+
+                    kelasRef.push({
+                        judul: data.judul,
+                        deskripsi: data.deskripsi,
+                        gambar: data.gambar
+                    })
+
+                    Swal.fire({
+                        title: data.judul,
+                        text: 'Berhasil Disimpan',
+                        icon: 'success'
+                    })
+                },
+                resultData: function(items){
+                    this.kelas = []
+
+                    items.forEach((item) => {
+                        let data = {
+                            id: item.key,
+                            judul: item.val().judul,
+                            deskripsi:item.val().deskripsi,
+                            gambar: item.val().gambar
+                        }
+                        this.kelas.push(data)
+                    })
+                    
+                    console.log(this.kelas)
+                },
+                errorData: function(error){
+                    console.log(error)
+                }
+            },
+            computed: {
+            }
+        })
+    </script>
+</body>
+</html>
